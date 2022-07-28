@@ -36,13 +36,40 @@ var transform = m.DefaultScene.VisualChildren.ToArray()[4].LocalTransform;
 var rnd = new Random(177);
 
 var sceneBuilder = new SceneBuilder();
-for (int i = 0; i < 100; i++)
-{
-    sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
-        new Vector3(rnd.Next(1, 10), rnd.Next(1, 10), rnd.Next(1, 10)),
-        transform.Rotation,
-        new Vector3(rnd.Next(-50, 50), 20, rnd.Next(-50, 50))));
-}
+
+// center tree
+sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
+    new Vector3(1, 1, 1),
+    transform.Rotation,
+    new Vector3(0, 5, 0)));
+
+sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
+    new Vector3(2, 2, 2),
+    transform.Rotation,
+    new Vector3(100, 5, 0)));
+
+sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
+    new Vector3(3, 3, 3),
+    transform.Rotation,
+    new Vector3(0, 5, 100)));
+
+sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
+    new Vector3(4, 4, 4),
+    transform.Rotation,
+    new Vector3(-100, 5, 0)));
+
+sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
+    new Vector3(5, 5, 5),
+    transform.Rotation,
+    new Vector3(0, 5, -100)));
+
+//for (int i = 0; i < 100; i++)
+//{
+//    sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
+//        new Vector3(rnd.Next(1, 10), rnd.Next(1, 10), rnd.Next(1, 10)),
+//        transform.Rotation,
+//        new Vector3(rnd.Next(-50, 50), 20, rnd.Next(-50, 50))));
+//}
 
 // saving
 var gltf = sceneBuilder.ToGltf2(SceneBuilderSchema2Settings.WithGpuInstancing);
