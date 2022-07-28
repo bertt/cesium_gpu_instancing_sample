@@ -2,19 +2,16 @@
 using cesium_gpu_instancing_sample;
 using Dapper;
 using Npgsql;
-using SharpGLTF.Geometry.Parametric;
-using SharpGLTF.Materials;
 using SharpGLTF.Scenes;
 using SharpGLTF.Schema2;
+using SharpGLTF.Transforms;
 using System.Numerics;
 using Wkx;
-using VPOSNRM = SharpGLTF.Geometry.VertexBuilder<SharpGLTF.Geometry.VertexTypes.VertexPositionNormal, SharpGLTF.Geometry.VertexTypes.VertexEmpty, SharpGLTF.Geometry.VertexTypes.VertexEmpty>;
 
 Console.WriteLine("Hello, World!");
 var conn = new NpgsqlConnection("Host=localhost;Username=postgres;password=postgres;Port=5432");
 conn.Open();
 var cmd = conn.CreateCommand();
-var glb = "Box.glb";
 
 var table = "traffic_signs_instances";
 var geom_column = "geom";
@@ -32,27 +29,24 @@ var points_3857 = conn.Query<Geometry>($"select ST_AsBinary(st_transform({geom_c
 
 Console.WriteLine("Points: " + points_3857.Count);
 
-var m = ModelRoot.Load("Box.glb");
-var mesh = VPOSNRM.CreateCompatibleMesh("shape");
+var m = ModelRoot.Load("tree.glb");
+var meshBuilder = m.LogicalMeshes.First().ToMeshBuilder();
+var transform = m.DefaultScene.VisualChildren.ToArray()[4].LocalTransform;
 
-var r = new Quaternion(0.00001f, 0.00001f, 0.000001f, 0.00001f);
-// var r = new Quaternion(0.0f, -0.0f, 0.00f, 0.00f);
-
-var material = MaterialBuilder.CreateDefault();
-
-var material1 = new MaterialBuilder()
-          .WithDoubleSide(true)
-          .WithMetallicRoughnessShader()
-          .WithChannelParam(KnownChannel.BaseColor, KnownProperty.RGBA, new Vector4(1, 0, 0, 1));
-
-mesh.AddCube(material1, Matrix4x4.Identity);
+var rnd = new Random(177);
 
 var sceneBuilder = new SceneBuilder();
+for (int i = 0; i < 100; i++)
+{
+    sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
+        new Vector3(rnd.Next(1, 10), rnd.Next(1, 10), rnd.Next(1, 10)),
+        transform.Rotation,
+        new Vector3(rnd.Next(-50, 50), 20, rnd.Next(-50, 50))));
+}
 
-var t = new Vector3(0, 0.5f,  0);
-sceneBuilder.AddRigidMesh(mesh, (r, t));
-sceneBuilder.AddRigidMesh(mesh, (r, new Vector3(10, 0.5f, 0)));
-sceneBuilder.AddRigidMesh(mesh, (r, new Vector3(0, 0.5f, 10)));
+// saving
+var gltf = sceneBuilder.ToGltf2(SceneBuilderSchema2Settings.WithGpuInstancing);
+gltf.SaveGLB("trees.glb");
 
 
 //foreach (var point in points_3857){
@@ -71,8 +65,8 @@ sceneBuilder.AddRigidMesh(mesh, (r, new Vector3(0, 0.5f, 10)));
 //}
 
 // saving
-var gltf = sceneBuilder.ToGltf2(SceneBuilderSchema2Settings.WithGpuInstancing);
-gltf.SaveGLTF("Box_with_instances.gltf");
+//var gltf = sceneBuilder.ToGltf2(SceneBuilderSchema2Settings.WithGpuInstancing);
+//gltf.SaveGLTF("Box_with_instances.gltf");
 
 static BoundingBox GetBoundingBox(NpgsqlConnection conn, NpgsqlCommand cmd, string table, string geom_column)
 {
