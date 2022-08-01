@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using cesium_gpu_instancing_sample;
+using cesium_gpu_instancing_sample.CesiumKit;
 using Dapper;
 using Npgsql;
 using SharpGLTF.Scenes;
@@ -28,8 +29,8 @@ var subtreebytes = GetSubtreeBytes("1");
 File.WriteAllBytes($"subtrees/0_0_0.subtree", subtreebytes);
 
 
-var boundingboxAllFeatures = BoundingBoxCalculator.TranslateRotateX(bbox3d, Reverse(translation), Math.PI / 2);
-var box = boundingboxAllFeatures.GetBox();
+//var boundingboxAllFeatures = BoundingBoxCalculator.TranslateRotateX(bbox3d, Reverse(translation), Math.PI / 2);
+//var box = boundingboxAllFeatures.GetBox();
 
 //3889489.6901732744,
 //      332141.2123117483,
@@ -37,31 +38,42 @@ var box = boundingboxAllFeatures.GetBox();
 
 var sql = $"SELECT ST_AsBinary(ST_RotateX(ST_Translate(st_transform(st_force3d({geom_column}), 4978), 3889489.6901732744 * -1, 332141.2123117483 * -1, 5026974.8389739739 * -1), -pi() / 2)) as geom FROM {table} where {geom_column} is not null";
 // var sql = $"SELECT ST_AsBinary(ST_Translate(st_transform(st_force3d({geom_column}), 4978), 3889489.6901732744 * -1, 332141.2123117483 * -1, 5026974.8389739739 * -1)) as geom FROM {table} where {geom_column} is not null";
-// "select ST_AsBinary(st_transform({geom_column}, 4978)) as geom from {table} where {geom_column} is not null"
+// var sql = $"SELECT ST_AsBinary(ST_Translate(st_transform(st_force3d({geom_column}), 4978), 3889489.6901732744 * -1, 332141.2123117483 * -1, 5026974.8389739739 * -1)) as geom FROM {table} where {geom_column} is not null";
+///select ST_AsBinary(st_transform({geom_column}, 4978)) as geom from {table} where {geom_column} is not null"
 var points_3857 = conn.Query<Geometry>(sql).ToList();
 
 Console.WriteLine("Points: " + points_3857.Count);
 
 var m = ModelRoot.Load("tree.glb");
 var meshBuilder = m.LogicalMeshes.First().ToMeshBuilder();
-var transform = m.DefaultScene.VisualChildren.ToArray()[4].LocalTransform;
-
-var rnd = new Random(177);
-
+// var transform = m.DefaultScene.VisualChildren.ToArray()[4].LocalTransform; // Rotation = {{X:0.7071068 Y:0 Z:0 W:0.7071067}}
 var sceneBuilder = new SceneBuilder();
 
+var rnd = new Random();
 foreach (var point in points_3857)
 {
 
     if (point is not null)
     {
+        var cartesian = SpatialConverter.GeodeticToEcef(4.8988027, 52.3700643, 0);
+        var enu = Transforms.EastNorthUpToFixedFrame(cartesian);
+
+
+        var random = new Random();
+        var rad = Radian.ToRadius(random.Next(0, 360));
+
+
+        var quaternion = Transforms.GetQuaterion(enu, rad);
         var p = (Point)point;
-        var t = new Vector3((float)p.X , (float)p.Y + 10 , (float)p.Z );
-        //var t = new Vector3( (float)center_3857.X - (float)p.X, 0.5f,  (float)center_3857.Y - (float)p.Y);
+
+        var scaleRandom = rnd.Next(1, 5);
+        var scale = new Vector3(scaleRandom, scaleRandom, scaleRandom);
+        var translate = new Vector3((float)p.X , (float)p.Y + 5f * scaleRandom , (float)p.Z );
         sceneBuilder.AddRigidMesh(meshBuilder, new AffineTransform(
-            new Vector3(5, 5, 5),
-            transform.Rotation,
-            t));
+            scale,
+            quaternion,
+            translate));
+
         Console.Write('.');
     }
 }

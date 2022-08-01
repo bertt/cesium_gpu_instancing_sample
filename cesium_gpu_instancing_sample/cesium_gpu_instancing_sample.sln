@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cesium_gpu_instancing_sample", "cesium_gpu_instancing_sample\cesium_gpu_instancing_sample.csproj", "{61C717B2-F147-4DBC-BF5D-F961895B985D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cesium_gpu_instancing_sample", "cesium_gpu_instancing_sample\cesium_gpu_instancing_sample.csproj", "{61C717B2-F147-4DBC-BF5D-F961895B985D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cesium_instancing_gpu_tests", "cesium_instancing_gpu_tests\cesium_instancing_gpu_tests.csproj", "{FC06356B-6310-4418-989E-5A0B1EC554D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{61C717B2-F147-4DBC-BF5D-F961895B985D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61C717B2-F147-4DBC-BF5D-F961895B985D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61C717B2-F147-4DBC-BF5D-F961895B985D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC06356B-6310-4418-989E-5A0B1EC554D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC06356B-6310-4418-989E-5A0B1EC554D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC06356B-6310-4418-989E-5A0B1EC554D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC06356B-6310-4418-989E-5A0B1EC554D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
