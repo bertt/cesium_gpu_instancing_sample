@@ -26,7 +26,6 @@ namespace cesium_gpu_instancing_sample.CesiumKit
                 0, 0, 0, 1);
         }
 
-
         public static Matrix4x4 EastNorthUpToFixedFrame(Vector3 cartesian)
         {
             return Matrix4x4.Transpose(SpatialConverter.EcefToEnu(cartesian));
