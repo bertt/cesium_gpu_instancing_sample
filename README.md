@@ -21,3 +21,5 @@ When running the program, following files are stored in output directory:
 - directory 'subtrees': contains subtree files
 
 Put the output directory on a webserver and point the browser to the index.html file.
+
+![image](https://user-images.githubusercontent.com/538812/182333886-a37a7e5e-47b8-43d8-85ae-0bc02c01eb7c.png)
