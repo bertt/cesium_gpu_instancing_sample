@@ -2,6 +2,8 @@
 
 Sample of creating ext_mesh_gpu_instancing glTF file for use in Cesium viewer.
 
+Specs see https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Vendor/EXT_mesh_gpu_instancing/README.md
+
 1 glTF model (tree.glb) is instanced with random scales and rotations.
 
 ## Database
