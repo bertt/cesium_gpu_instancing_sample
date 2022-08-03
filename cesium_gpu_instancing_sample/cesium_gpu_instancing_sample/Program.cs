@@ -43,9 +43,7 @@ foreach (var point in points_4978)
 {
     if (point is not null)
     {
-        var cartesian = SpatialConverter.GeodeticToEcef(4.8988027, 52.3700643, 0);
-        var enu = Transforms.EastNorthUpToFixedFrame(cartesian);
-
+        var enu = Transforms.EastNorthUpToFixedFrame(new Vector3((float)translation[0], (float)translation[1], (float)translation[2]));
         var random = new Random();
         var rad = Radian.ToRadius(random.Next(0, 360));
 
